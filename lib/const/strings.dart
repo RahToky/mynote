@@ -1,0 +1,12 @@
+String kAppName = "My Note";
+String kTitle = "Titre";
+String kTheme = "Thème";
+String kContent = "Contenu";
+String kColor = "Couleur";
+String kColors = "Couleurs";
+String kSave = "Enregistrer";
+String kAbout = "A propos";
+String kDescription = "Déscription";
+String kEdit = "Modifier";
+String kEdited = "Modifié";
+String kNew = "Nouveau";
