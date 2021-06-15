@@ -15,7 +15,7 @@ class NoteCard extends StatelessWidget {
     return GestureDetector(
       child: Container(
         height: kToolbarHeight + 0.5 * kToolbarHeight,
-        margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+        margin: const EdgeInsets.fromLTRB(10, 10, 10, 0),
         padding: const EdgeInsets.all(8.0),
         alignment: Alignment.topLeft,
         decoration: BoxDecoration(

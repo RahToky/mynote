@@ -35,6 +35,14 @@ class MyApp extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
+        appBarTheme: AppBarTheme(
+          backgroundColor: Colors.black87,
+          iconTheme: IconThemeData(color: Colors.white),
+          foregroundColor: Colors.white,
+          textTheme: TextTheme(
+            title: TextStyle(color: Colors.white, fontSize: 20)
+          ),
+        ),
         textButtonTheme: TextButtonThemeData(
           style: TextButton.styleFrom(
             primary: Colors.white,

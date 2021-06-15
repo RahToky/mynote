@@ -22,7 +22,7 @@ class NoteDetailPage extends StatelessWidget {
         width: size.width,
         height: size.height - kToolbarHeight * 2,
         alignment: Alignment.topLeft,
-        margin: EdgeInsets.fromLTRB(10, 0, 10, 10),
+        margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
         padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(5.0),

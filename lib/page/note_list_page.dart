@@ -32,31 +32,30 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
-      appBar: MyAppBar(),
-      body: FutureBuilder<List<Note>>(
-        future: NoteService().getNotes(), // async work
-        builder: (BuildContext context, AsyncSnapshot<List<Note>> snapshot) {
-          switch (snapshot.connectionState) {
-            case ConnectionState.waiting:
-              return Center(child: Text('Chargement....'));
-            default:
-              if (snapshot.hasError)
-                return Text('Error: ${snapshot.error}');
-              else {
-                List<Note> notes = snapshot.data;
-                return (notes != null && notes.length>0)?
-                RefreshIndicator(
-                  onRefresh: () async {setState(() {});},
-                  child: ListView.builder(
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Theme.of(context).backgroundColor,
+        appBar: MyAppBar(),
+        body: FutureBuilder<List<Note>>(
+          future: NoteService().getNotes(), // async work
+          builder: (BuildContext context, AsyncSnapshot<List<Note>> snapshot) {
+            switch (snapshot.connectionState) {
+              case ConnectionState.waiting:
+                return Center(child: Text('Chargement....'));
+              default:
+                if (snapshot.hasError)
+                  return Text('Error: ${snapshot.error}');
+                else {
+                  List<Note> notes = snapshot.data;
+                  return (notes != null && notes.length>0)?
+                  ListView.builder(
                     shrinkWrap: true,
                     itemCount: notes.length,
                     itemBuilder: (context, i) {
                       final item = notes[i];
                       return Dismissible(
                         key: UniqueKey(),
-                        child: Container(
+                        child: (i < notes.length-1)?NoteCard(item):Container(
                           margin: EdgeInsets.only(bottom: 10),
                           child: NoteCard(item),
                         ),
@@ -66,20 +65,20 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                         },
                       );
                     },
-                  ),
-                ):Center(child: Text("aucun note"),);
-              }
-          }
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add),
-        backgroundColor: Theme.of(context).accentColor,
-        onPressed: () {
-          Navigator.pushNamed(context, NoteAddPage2.routeName).then((value) {
-            setState((){});
-          });
-        },
+                  ):Center(child: Text("aucun note"),);
+                }
+            }
+          },
+        ),
+        floatingActionButton: FloatingActionButton(
+          child: const Icon(Icons.add),
+          backgroundColor: Theme.of(context).accentColor,
+          onPressed: () {
+            Navigator.pushNamed(context, NoteAddPage2.routeName).then((value) {
+              setState((){});
+            });
+          },
+        ),
       ),
     );
   }

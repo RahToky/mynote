@@ -18,6 +18,10 @@ class _NoteAddPage2State extends State<NoteAddPage2> {
   Note note;
   final NoteService _noteService = NoteService();
   final List<Map<String, String>> hexColors = MyColors.getHexMapColors();
+
+  TextEditingController _titleController;
+  TextEditingController _contentController;
+  bool focusContent = false;
   bool isEditing = false;
 
   void initNote(context) {
@@ -33,48 +37,85 @@ class _NoteAddPage2State extends State<NoteAddPage2> {
   }
 
   @override
+  void initState() {
+    _titleController = TextEditingController();
+    _contentController = TextEditingController();
+  }
+
+  @override
   Widget build(BuildContext context) {
     initNote(context);
     final Size size = MediaQuery.of(context).size;
 
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
-      appBar: MyAppBarAdd(isEditing?kEdit:kNew),
+      appBar: MyAppBarAdd(isEditing ? kEdit : kNew,note.cardBackgroundColor),
       body: SingleChildScrollView(
         child: Column(
           children: [
+            SizedBox(height: 10),
             createBox(
-              height:size.height - kToolbarHeight * 3,
-              width:size.width,
-              backgroundColor:HexColor(note.cardBackgroundColor),
-              borderColor:note.cardBorderColor == null
+              height: size.height - 10 - kToolbarHeight * 3,
+              width: size.width,
+              backgroundColor: HexColor(note.cardBackgroundColor),
+              borderColor: note.cardBorderColor == null
                   ? Colors.transparent
                   : HexColor(note.cardBorderColor),
-              widgetChild:SingleChildScrollView(
+              widgetChild: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(height: 40, child: addNoteHeader(note)),
-                    SizedBox(height: 10),
-                    TextField(
-                      maxLines: null,
-                      decoration: new InputDecoration(
-                        isDense: true,
-                        border: InputBorder.none,
-                        focusedBorder: InputBorder.none,
-                        hintText: 'Déscription....',
-                        hintStyle: TextStyle(
-                          color: HexColor(note.cardForgroundColor),
-                        )
+                    Container(
+                      height: 30,
+                      child: TextField(
+                        autofocus: true,
+                        onTap: (){focusContent = false;},
+                        controller: _titleController,
+                        maxLines: 1,
+                        decoration: new InputDecoration(
+                            isDense: true,
+                            border: InputBorder.none,
+                            focusedBorder: InputBorder.none,
+                            hintText: '$kTitle....',
+                            hintStyle: TextStyle(
+                              color: HexColor(note.cardForgroundColor),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 24,
+                            )),
+                        style:
+                            TextStyle(color: HexColor(note.cardForgroundColor),fontSize: 24),
                       ),
-                      style:
-                          TextStyle(color: HexColor(note.cardForgroundColor)),
+                    ),
+                    Divider(height:1,color: HexColor(note.cardForgroundColor)),
+                    InkWell(
+                      onTap: (){
+                        setState(() {
+                          focusContent=true;
+                        });
+                      },
+                      child: Container(
+                        height: size.height*0.66,
+                        child: TextField(
+                          autofocus: focusContent,
+                          controller: _contentController,
+                          maxLines: null,
+                          decoration: new InputDecoration(
+                              isDense: true,
+                              border: InputBorder.none,
+                              focusedBorder: InputBorder.none,
+                              hintText: '$kDescription....',
+                              hintStyle: TextStyle(
+                                color: HexColor(note.cardForgroundColor),
+                              )),
+                          style:
+                              TextStyle(color: HexColor(note.cardForgroundColor)),
+                        ),
+                      ),
                     ),
                   ],
                 ),
               ),
             ),
-
             Container(
               width: size.width,
               height: kToolbarHeight,
@@ -97,20 +138,19 @@ class _NoteAddPage2State extends State<NoteAddPage2> {
   }
 
   void saveNote(context) async {
-    // Note note = Note(
-    //   title: _titleController.text,
-    //   content: _contentController.text,
-    //   cardBackgroundColor: hexColors[selectedThemeId]['cardBackgroundColor'],
-    //   cardForgroundColor: hexColors[selectedThemeId]['cardForgroundColor'],
-    //   cardBorderColor: hexColors[selectedThemeId]['cardBorderColor'],
-    //   isLocked: 0,
-    // );
-    // await _noteService.saveNote(note);
-    // Navigator.pop(context);
+    note.title= _titleController.text;
+    note.content= _contentController.text;
+    note.cardBackgroundColor= hexColors[2]['cardBackgroundColor'];
+    note.cardForgroundColor=hexColors[2]['cardForgroundColor'];
+    note.cardBorderColor= hexColors[2]['cardBorderColor'];
+    note.isLocked= 0;
+    await _noteService.saveNote(note);
+    Navigator.pop(context);
   }
 }
 
-Container createBox({height, width, backgroundColor, borderColor, widgetChild}) =>
+Container createBox(
+        {height, width, backgroundColor, borderColor, widgetChild}) =>
     Container(
       width: width,
       height: height,
@@ -128,33 +168,3 @@ Container createBox({height, width, backgroundColor, borderColor, widgetChild}) 
       child: widgetChild,
     );
 
-Widget addNoteHeader(Note note) => Row(
-      children: [
-        Expanded(
-          child: TextField(
-            decoration: new InputDecoration(
-              isDense: true,
-              enabledBorder: UnderlineInputBorder(
-                borderSide: BorderSide(
-                    color: HexColor(
-                        note.cardBorderColor ?? note.cardForgroundColor)),
-              ),
-              focusedBorder: UnderlineInputBorder(
-                borderSide: BorderSide(
-                    color: HexColor(
-                        note.cardBorderColor ?? note.cardForgroundColor)),
-              ),
-            ),
-            style: TextStyle(color: HexColor(note.cardForgroundColor)),
-          ),
-        ),
-        Container(
-          child: IconButton(
-            alignment: Alignment.centerRight,
-            icon: Icon(Icons.lock_open_outlined),
-            onPressed: () {},
-            color: HexColor(note.cardForgroundColor),
-          ),
-        )
-      ],
-    );
