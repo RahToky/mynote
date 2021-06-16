@@ -113,6 +113,7 @@ class _MyAppBarAddState extends State<MyAppBarAdd> {
 
   @override
   Widget build(BuildContext context) {
+    final templateHeight = kToolbarHeight * 0.4;
     return AppBar(
       elevation: 0,
       centerTitle: true,
@@ -126,8 +127,8 @@ class _MyAppBarAddState extends State<MyAppBarAdd> {
             children: [
               Positioned(
                 child: Container(
-                  width: kToolbarHeight * 0.5,
-                  height: kToolbarHeight * 0.5,
+                  width: templateHeight,
+                  height: templateHeight,
                   color: secondPaletteColor,
                 ),
               ),
@@ -135,8 +136,8 @@ class _MyAppBarAddState extends State<MyAppBarAdd> {
                 right: 5,
                 top: 5,
                 child: Container(
-                  width: kToolbarHeight * 0.5,
-                  height: kToolbarHeight * 0.5,
+                  width: templateHeight,
+                  height: templateHeight,
                   color: HexColor(hexCardBackgroundColor),
                 ),
               ),

@@ -25,8 +25,8 @@ class MyApp extends StatelessWidget {
       },
       theme: ThemeData(
         primaryColor: Colors.white,
-        backgroundColor: Colors.white,
-        accentColor: Colors.blueGrey,
+        backgroundColor: Colors.black26,
+        accentColor: Colors.lightBlueAccent,
         buttonColor: Colors.purple,
         textTheme: const TextTheme(
           bodyText1: TextStyle(
@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
         appBarTheme: AppBarTheme(
-          backgroundColor: Colors.black87,
+          backgroundColor: Colors.black,
           iconTheme: IconThemeData(color: Colors.white),
           foregroundColor: Colors.white,
           textTheme: TextTheme(
@@ -46,7 +46,7 @@ class MyApp extends StatelessWidget {
         textButtonTheme: TextButtonThemeData(
           style: TextButton.styleFrom(
             primary: Colors.white,
-            backgroundColor: Colors.green,
+            backgroundColor: Colors.lightBlueAccent,
           ),
         ),
       ),
