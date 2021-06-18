@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:my_note/model/note.dart';
 import 'package:my_note/util/color_util.dart';
 
-import 'include/app_bar.dart';
+import 'include/app_bar_detail.dart';
 import 'include/note_card.dart';
 
 class NoteDetailPage extends StatelessWidget {
   static const routeName = "/detail";
-  Note note;
 
   @override
   Widget build(BuildContext context) {
+    Note note;
     final arguments = ModalRoute.of(context).settings.arguments as Map;
     if (arguments != null) note = arguments['note'];
     final Size size = MediaQuery.of(context).size;

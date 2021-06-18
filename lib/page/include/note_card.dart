@@ -3,8 +3,6 @@ import 'package:my_note/model/note.dart';
 import 'package:my_note/page/note_detail.dart';
 import 'package:my_note/util/color_util.dart';
 
-import '../note_add.dart';
-
 class NoteCard extends StatelessWidget {
   final Note note;
 

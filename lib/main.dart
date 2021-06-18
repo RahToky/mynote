@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:my_note/page/note_add_2.dart';
+import 'package:my_note/page/note_list.dart';
+import 'package:my_note/page/note_add.dart';
 import 'package:my_note/page/note_detail.dart';
-import 'package:my_note/page/note_list_page.dart';
-
-import 'const/strings.dart';
-import 'page/note_add.dart';
 
 void main() {
   runApp(MyApp());
@@ -16,11 +13,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'My Note',
-      initialRoute: HomePage.routeName,
+      initialRoute: HomePage.routeName,//HomePage.routeName,
       routes: {
         HomePage.routeName: (context) => HomePage(),
         NoteAddPage.routeName: (context) => NoteAddPage(),
-        NoteAddPage2.routeName: (context) => NoteAddPage2(),
         NoteDetailPage.routeName: (context) => NoteDetailPage(),
       },
       theme: ThemeData(

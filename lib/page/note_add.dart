@@ -1,125 +1,123 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:my_note/const/colors.dart';
 import 'package:my_note/const/strings.dart';
 import 'package:my_note/model/note.dart';
 import 'package:my_note/service/note_service.dart';
 import 'package:my_note/util/color_util.dart';
 
+import 'include/app_bar_add.dart';
+
 class NoteAddPage extends StatefulWidget {
-  static const routeName = "/add";
+  static const routeName = "/add2";
 
   @override
   _NoteAddPageState createState() => _NoteAddPageState();
 }
 
 class _NoteAddPageState extends State<NoteAddPage> {
-  final double spacing = 20.0;
+  Note note;
   final NoteService _noteService = NoteService();
-
-  TextEditingController _titleController = TextEditingController();
-  TextEditingController _contentController = TextEditingController();
   final List<Map<String, String>> hexColors = MyColors.getHexMapColors();
-  int selectedThemeId = 0;
-  bool isChoosing = true;
+
+  TextEditingController _titleController;
+  TextEditingController _contentController;
+  bool focusContent = false;
+  bool isEditing = false;
+
+  void initNote(context) {
+    final arguments = ModalRoute.of(context).settings.arguments as Map;
+    if (arguments != null) note = arguments['note'];
+    if (note == null) {
+      isEditing = true;
+      note = Note();
+      note.cardForgroundColor = hexColors[1]['cardForgroundColor'];
+      note.cardBackgroundColor = hexColors[1]['cardBackgroundColor'];
+      note.cardBorderColor = hexColors[1]['cardBorderColor'];
+    }
+  }
+
+  @override
+  void initState() {
+    _titleController = TextEditingController();
+    _contentController = TextEditingController();
+  }
 
   @override
   Widget build(BuildContext context) {
+    initNote(context);
     final Size size = MediaQuery.of(context).size;
+
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
-      appBar: AppBar(elevation: 0),
+      appBar: MyAppBarAdd(isEditing ? kEdit : kNew, note.cardBackgroundColor),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(height: 20),
-            Container(
-              height: size.height - kToolbarHeight*3+10 - 20,
-              padding: EdgeInsets.fromLTRB(10.0, 0, 10.0, 5.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '$kTheme :',
-                    style: Theme.of(context).textTheme.bodyText1,
-                  ),
-                  SizedBox(height: 5),
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: hexColors.map((color) {
-                        final itemId = int.parse(color['id']);
-                        return GestureDetector(
-                          child: AnimatedContainer(
-                            duration: Duration(milliseconds: 400),
-                            height: 50,
-                            width: isChoosing
-                                ? 50
-                                : (itemId == selectedThemeId)
-                                    ? size.width -20
-                                    : 0,
-                            decoration: BoxDecoration(
-                                color: HexColor(color['cardBackgroundColor']),
-                                border: Border.all(
-                                    color: HexColor(
-                                        color['cardBorderColor'] ?? "#ffffff"),
-                                    width: (color['cardBorderColor'] == null)
-                                        ? 0
-                                        : 1)),
-                          ),
-                          onTap: () {
-                            setState(() {
-                              selectedThemeId = itemId;
-                              isChoosing = !isChoosing;
-                            });
-                          },
-                        );
-                      }).toList(),
+            SizedBox(height: 10),
+            createBox(
+              height: size.height - 10 - kToolbarHeight * 3,
+              width: size.width,
+              backgroundColor: HexColor(note.cardBackgroundColor),
+              borderColor: note.cardBorderColor == null
+                  ? Colors.transparent
+                  : HexColor(note.cardBorderColor),
+              widgetChild: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      height: 30,
+                      child: TextField(
+                        autofocus: true,
+                        onTap: () {
+                          focusContent = false;
+                        },
+                        controller: _titleController,
+                        maxLines: 1,
+                        decoration: new InputDecoration(
+                            isDense: true,
+                            border: InputBorder.none,
+                            focusedBorder: InputBorder.none,
+                            hintText: '$kTitle....',
+                            hintStyle: TextStyle(
+                              color: HexColor(note.cardForgroundColor),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 24,
+                            )),
+                        style: TextStyle(
+                            color: HexColor(note.cardForgroundColor),
+                            fontSize: 24),
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 20),
-                  Text(
-                    "$kTitle :",
-                    style: Theme.of(context).textTheme.bodyText1,
-                  ),
-                  SizedBox(height: 5),
-                  TextField(
-                    controller: _titleController,
-                    maxLines: 1,
-                    decoration: new InputDecoration(
-                      isDense: true,
-                      focusedBorder: OutlineInputBorder(
-                          borderSide: new BorderSide(
-                              color: Theme.of(context).accentColor)),
-                      border: new OutlineInputBorder(
-                          borderSide: new BorderSide(
-                              color: Theme.of(context).accentColor)),
+                    Divider(
+                        height: 1, color: HexColor(note.cardForgroundColor)),
+                    InkWell(
+                      onTap: () {
+                        setState(() {
+                          focusContent = true;
+                        });
+                      },
+                      child: Container(
+                        height: size.height * 0.66,
+                        child: TextField(
+                          autofocus: focusContent,
+                          controller: _contentController,
+                          maxLines: null,
+                          decoration: new InputDecoration(
+                              isDense: true,
+                              border: InputBorder.none,
+                              focusedBorder: InputBorder.none,
+                              hintText: '$kDescription....',
+                              hintStyle: TextStyle(
+                                color: HexColor(note.cardForgroundColor),
+                              )),
+                          style: TextStyle(
+                              color: HexColor(note.cardForgroundColor)),
+                        ),
+                      ),
                     ),
-                  ),
-                  SizedBox(height: spacing),
-                  Text(
-                    "$kContent :",
-                    style: Theme.of(context).textTheme.bodyText1,
-                  ),
-                  SizedBox(height: 5),
-                  TextField(
-                    controller: _contentController,
-                    maxLines: 10,
-                    keyboardType: TextInputType.multiline,
-                    decoration: new InputDecoration(
-                      isDense: true,
-                      focusedBorder: OutlineInputBorder(
-                          borderSide: new BorderSide(
-                              color: Theme.of(context).accentColor)),
-                      border: new OutlineInputBorder(
-                          borderSide: new BorderSide(
-                              color: Theme.of(context).accentColor)),
-                    ),
-                  ),
-                  SizedBox(height: 20),
-
-                ],
+                  ],
+                ),
               ),
             ),
             Container(
@@ -136,7 +134,7 @@ class _NoteAddPageState extends State<NoteAddPage> {
                 ),
                 style: Theme.of(context).textButtonTheme.style,
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -144,15 +142,32 @@ class _NoteAddPageState extends State<NoteAddPage> {
   }
 
   void saveNote(context) async {
-    Note note = Note(
-      title: _titleController.text,
-      content: _contentController.text,
-      cardBackgroundColor: hexColors[selectedThemeId]['cardBackgroundColor'],
-      cardForgroundColor: hexColors[selectedThemeId]['cardForgroundColor'],
-      cardBorderColor: hexColors[selectedThemeId]['cardBorderColor'],
-      isLocked: 0,
-    );
+    note.title = _titleController.text;
+    note.content = _contentController.text;
+    note.cardBackgroundColor = hexColors[2]['cardBackgroundColor'];
+    note.cardForgroundColor = hexColors[2]['cardForgroundColor'];
+    note.cardBorderColor = hexColors[2]['cardBorderColor'];
+    note.isLocked = 0;
     await _noteService.saveNote(note);
     Navigator.pop(context);
   }
 }
+
+Container createBox(
+        {height, width, backgroundColor, borderColor, widgetChild}) =>
+    Container(
+      width: width,
+      height: height,
+      alignment: Alignment.topLeft,
+      margin: EdgeInsets.fromLTRB(10, 0, 10, 10),
+      padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(5.0),
+        color: backgroundColor,
+        border: Border.all(
+          color: borderColor,
+          width: borderColor == null ? 0 : 2,
+        ),
+      ),
+      child: widgetChild,
+    );
