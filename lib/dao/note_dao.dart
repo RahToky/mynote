@@ -23,7 +23,7 @@ class NoteDao {
           'title TEXT, '
           'content TEXT,'
           'cardBackgroundColor TEXT,'
-          'cardForgroundColor TEXT,'
+          'cardForegroundColor TEXT,'
           'cardBorderColor TEXT,'
           'isLocked INTEGER,'
           'firstIconCodePoint TEXT,'

@@ -32,14 +32,10 @@ class MySliverAppBar extends StatelessWidget {
             title: Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                if (_appBarHeight > kToolbarHeight + 20)
+                if (_appBarHeight > kToolbarHeight + 40)
                   Column(
                     children: [
-                      Icon(
-                        Icons.file_copy,
-                        color: Colors.white,
-                      ),
-                      SizedBox(height: 10),
+                      Image.asset("assets/icon/logo.png",width: 50),
                     ],
                   ),
                 Text(

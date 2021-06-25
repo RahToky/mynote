@@ -7,7 +7,7 @@ class Note {
   String content;
   int isLocked;
   String cardBackgroundColor;
-  String cardForgroundColor;
+  String cardForegroundColor;
   String cardBorderColor;
   int firstIconCodePoint;
   int secondIconCodePoint;
@@ -18,7 +18,7 @@ class Note {
       this.content,
       this.isLocked,
       this.cardBackgroundColor,
-      this.cardForgroundColor,
+      this.cardForegroundColor,
       this.cardBorderColor,
       this.firstIconCodePoint,
       this.secondIconCodePoint});
@@ -28,7 +28,7 @@ class Note {
         id: map['id'],
         title: map['title'],
         content: map['content'],
-        cardForgroundColor: map['cardForgroundColor'],
+        cardForegroundColor: map['cardForegroundColor'],
         cardBackgroundColor: map['cardBackgroundColor'],
         cardBorderColor: map['cardBorderColor'],
         firstIconCodePoint: map['firstIconCodePoint'],
@@ -41,7 +41,7 @@ class Note {
       'id': id,
       'title': this.title,
       'content': this.content,
-      'cardForgroundColor': this.cardForgroundColor,
+      'cardForegroundColor': this.cardForegroundColor,
       'cardBackgroundColor': this.cardBackgroundColor,
       'cardBorderColor': this.cardBorderColor,
       'firstIconCodePoint': this.firstIconCodePoint,

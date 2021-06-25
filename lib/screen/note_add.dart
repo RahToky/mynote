@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_note/callback/color_picker_callback.dart';
 import 'package:my_note/const/colors.dart';
 import 'package:my_note/const/strings.dart';
 import 'package:my_note/model/note.dart';
@@ -14,10 +15,10 @@ class NoteAddPage extends StatefulWidget {
   _NoteAddPageState createState() => _NoteAddPageState();
 }
 
-class _NoteAddPageState extends State<NoteAddPage> {
+class _NoteAddPageState extends State<NoteAddPage>  implements ColorsPickerListener{
+
   Note note;
   final NoteService _noteService = NoteService();
-  final List<Map<String, String>> hexColors = MyColors.getHexMapColors();
 
   TextEditingController _titleController;
   TextEditingController _contentController;
@@ -30,17 +31,24 @@ class _NoteAddPageState extends State<NoteAddPage> {
     if (note == null) {
       isEditing = true;
       note = Note();
-      note.cardForgroundColor = hexColors[1]['cardForgroundColor'];
-      note.cardBackgroundColor = hexColors[1]['cardBackgroundColor'];
-      note.cardBorderColor = hexColors[1]['cardBorderColor'];
+      setNoteColor("#43474a","#ffffff","#43474a");
     }
+  }
+
+  void setNoteColor(String hexForegroundColor, String hexBackgroundColor, String hexBorderColor){
+    note.cardForegroundColor = hexForegroundColor;
+    note.cardBackgroundColor = hexBackgroundColor;
+    note.cardBorderColor = hexBorderColor;
   }
 
   @override
   void initState() {
+    super.initState();
     _titleController = TextEditingController();
     _contentController = TextEditingController();
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +57,7 @@ class _NoteAddPageState extends State<NoteAddPage> {
 
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
-      appBar: MyAppBarAdd(isEditing ? kEdit : kNew, note.cardBackgroundColor),
+      appBar: MyAppBarAdd(isEditing ? kEdit : kNew, HexColor(note.cardBackgroundColor),HexColor(note.cardForegroundColor),this),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -78,19 +86,19 @@ class _NoteAddPageState extends State<NoteAddPage> {
                             isDense: true,
                             border: InputBorder.none,
                             focusedBorder: InputBorder.none,
-                            hintText: '$kTitle....',
+                            hintText: '$kTitle...',
                             hintStyle: TextStyle(
-                              color: HexColor(note.cardForgroundColor),
+                              color: HexColor(note.cardForegroundColor),
                               fontWeight: FontWeight.bold,
                               fontSize: 24,
                             )),
                         style: TextStyle(
-                            color: HexColor(note.cardForgroundColor),
-                            fontSize: 24),
+                            color: HexColor(note.cardForegroundColor),
+                            fontSize: 20),
                       ),
                     ),
                     Divider(
-                        height: 1, color: HexColor(note.cardForgroundColor)),
+                        height: 1, color: HexColor(note.cardForegroundColor)),
                     InkWell(
                       onTap: () {
                         setState(() {
@@ -107,12 +115,12 @@ class _NoteAddPageState extends State<NoteAddPage> {
                               isDense: true,
                               border: InputBorder.none,
                               focusedBorder: InputBorder.none,
-                              hintText: '$kDescription....',
+                              hintText: '$kDescription...',
                               hintStyle: TextStyle(
-                                color: HexColor(note.cardForgroundColor),
+                                color: HexColor(note.cardForegroundColor),
                               )),
                           style: TextStyle(
-                              color: HexColor(note.cardForgroundColor)),
+                              color: HexColor(note.cardForegroundColor)),
                         ),
                       ),
                     ),
@@ -144,30 +152,40 @@ class _NoteAddPageState extends State<NoteAddPage> {
   void saveNote(context) async {
     note.title = _titleController.text;
     note.content = _contentController.text;
-    note.cardBackgroundColor = hexColors[2]['cardBackgroundColor'];
-    note.cardForgroundColor = hexColors[2]['cardForgroundColor'];
-    note.cardBorderColor = hexColors[2]['cardBorderColor'];
     note.isLocked = 0;
-    await _noteService.saveNote(note);
-    Navigator.pop(context);
+    try {
+      await _noteService.saveNote(note);
+      Navigator.pop(context);
+    }on Exception catch(e){
+      print('error $e');
+    }
   }
+
+  @override
+  void onPick(Map<String, String> colorMap) {
+    setState(() {
+      setNoteColor(colorMap['cardForegroundColor'], colorMap['cardBackgroundColor'], colorMap['cardBorderColor']);
+    });
+  }
+
+  Container createBox(
+      {height, width, backgroundColor, borderColor, widgetChild}) =>
+      Container(
+        width: width,
+        height: height,
+        alignment: Alignment.topLeft,
+        margin: const EdgeInsets.fromLTRB(10, 0, 10, 10),
+        padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(5.0),
+          color: backgroundColor,
+          border: Border.all(
+            color: borderColor,
+            width: borderColor == null ? 0 : 2,
+          ),
+        ),
+        child: widgetChild,
+      );
 }
 
-Container createBox(
-        {height, width, backgroundColor, borderColor, widgetChild}) =>
-    Container(
-      width: width,
-      height: height,
-      alignment: Alignment.topLeft,
-      margin: EdgeInsets.fromLTRB(10, 0, 10, 10),
-      padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(5.0),
-        color: backgroundColor,
-        border: Border.all(
-          color: borderColor,
-          width: borderColor == null ? 0 : 2,
-        ),
-      ),
-      child: widgetChild,
-    );
+

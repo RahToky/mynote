@@ -1,12 +1,17 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:my_note/const/strings.dart';
 import 'package:my_note/model/note.dart';
-import 'package:my_note/page/include/app_bar_list.dart';
 import 'package:my_note/service/note_service.dart';
 
+import 'include/app_bar_list.dart';
 import 'include/note_card.dart';
 import 'note_add.dart';
+import 'dart:developer' as developer;
+
+import 'note_detail.dart';
 
 class HomePage extends StatefulWidget {
   static const routeName = "/";
@@ -42,13 +47,23 @@ class _HomePageState extends State<HomePage> {
               delegate: SliverChildBuilderDelegate(
                 (context, index) {
                   return Dismissible(
-                    behavior: HitTestBehavior.deferToChild,
                     key: UniqueKey(),
+                    behavior: HitTestBehavior.deferToChild,
                     child: (index < notes.length - 1)
-                        ? NoteCard(notes[index])
-                        : Container(
-                            margin: const EdgeInsets.only(bottom: 10),
+                        ? InkWell(
                             child: NoteCard(notes[index]),
+                            onTap: () {
+                              _openDetailScreen(notes[index]);
+                            },
+                          )
+                        : InkWell(
+                            child: Container(
+                              margin: const EdgeInsets.only(bottom: 10),
+                              child: NoteCard(notes[index]),
+                            ),
+                            onTap: () {
+                              _openDetailScreen(notes[index]);
+                            },
                           ),
                     background: Container(
                       color: Colors.red,
@@ -71,11 +86,14 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     direction: DismissDirection.startToEnd,
+                    onDismissed: (direction) {
+                      deleteNote((notes[index]).id);
+                    },
                     confirmDismiss: (direction) async {
                       return await showDialog(
                         context: context,
                         builder: (BuildContext context) {
-                          return confirmDialog(context, index);
+                          return confirmDialog(context);
                         },
                       );
                     },
@@ -92,9 +110,7 @@ class _HomePageState extends State<HomePage> {
           foregroundColor: Colors.white,
           onPressed: () {
             Navigator.pushNamed(context, NoteAddPage.routeName).then((value) {
-              setState(() {
-                fetchNotes();
-              });
+              fetchNotes();
             });
           },
         ),
@@ -103,15 +119,37 @@ class _HomePageState extends State<HomePage> {
   }
 
   void fetchNotes() async {
-    notes = await _noteService.getNotes();
-    setState(() {});
+    try {
+      notes = await _noteService.getNotes();
+      setState(() {});
+    } on Exception catch (e) {
+      developer.log('error: $e');
+    }
   }
 
   void deleteNote(id) async {
-    await _noteService.deleteNote(id);
+    try {
+      await _noteService.deleteNote(id);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              const Icon(
+                Icons.check_circle,
+                color: Colors.green,
+              ),
+              const SizedBox(width: 5),
+              const Text('Note supprimée'),
+            ],
+          ),
+        ),
+      );
+    } on Exception catch (e) {
+      developer.log('error: $e');
+    }
   }
 
-  AlertDialog confirmDialog(context, id) => AlertDialog(
+  AlertDialog confirmDialog(context) => AlertDialog(
         title: Text(kConfirm),
         content: Text(kAUsureToDel),
         actions: <Widget>[
@@ -125,7 +163,6 @@ class _HomePageState extends State<HomePage> {
           TextButton(
             onPressed: () => {
               Navigator.of(context).pop(true),
-              deleteNote(id),
             },
             child: Text(kRemove),
             style: TextButton.styleFrom(
@@ -134,4 +171,11 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       );
+
+  void _openDetailScreen(note) {
+    Navigator.pushNamed(context, NoteDetailPage.routeName,
+        arguments: {'note': note}).then((value) {
+      fetchNotes();
+    });
+  }
 }
