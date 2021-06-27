@@ -11,7 +11,10 @@ class ColorPickerDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double boxColorSize = 50;
+    final Size size = MediaQuery.of(context).size;
+    final axisCount = 5;
+    final boxWidth = size.width * 0.8;
+    final boxHeight = (colors.length/axisCount).ceil() * (boxWidth/axisCount);
 
     return Dialog(
       shape: RoundedRectangleBorder(
@@ -20,17 +23,19 @@ class ColorPickerDialog extends StatelessWidget {
       elevation: 0,
       backgroundColor: Colors.transparent,
       child: Container(
-        color: Colors.white,
-        padding: const EdgeInsets.all(5.0),
-        child: Wrap(
+        color: Colors.transparent,
+        padding: EdgeInsets.all(5),
+        alignment: Alignment.center,
+        height: boxHeight,
+        width: boxWidth,
+        child: GridView.count(
+          crossAxisCount: axisCount,
           children: colors.map((color) {
             return InkWell(
               child: Container(
-                height: boxColorSize,
-                width: boxColorSize,
                 color: HexColor(color['cardBackgroundColor']),
               ),
-              onTap: (){
+              onTap: () {
                 _listener.onPick(color);
                 Navigator.of(context).pop(false);
               },

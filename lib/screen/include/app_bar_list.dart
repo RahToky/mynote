@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_note/const/strings.dart';
+import 'package:my_note/screen/dialog/about_dialog.dart';
 
 class MySliverAppBar extends StatelessWidget {
   @override
@@ -13,7 +14,7 @@ class MySliverAppBar extends StatelessWidget {
           onPressed: () {
             showDialog(
                 context: context,
-                builder: (BuildContext context) => AboutDialog());
+                builder: (BuildContext context) => MyAboutDialog());
           },
         )
       ],

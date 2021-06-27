@@ -2,8 +2,10 @@ class MyColors{
 
   static List<Map<String,String>> getHexMapColors(){
     return [
+      {'id':'0','cardForegroundColor':'#5e5c3d','cardBackgroundColor':'#cfcdc6','cardBorderColor':'#dbdacc'},
       {'id':'0','cardForegroundColor':'#5e5c3d','cardBackgroundColor':'#ffffff','cardBorderColor':'#dbdacc'},
       {'id':'1','cardForegroundColor':'#ffffff','cardBackgroundColor':'#f7e434','cardBorderColor':null},
+      {'id':'1','cardForegroundColor':'#ffffff','cardBackgroundColor':'#a88132','cardBorderColor':null},
       {'id':'2','cardForegroundColor':'#ffffff','cardBackgroundColor':'#fc9403','cardBorderColor':null},
       {'id':'3','cardForegroundColor':'#ffffff','cardBackgroundColor':'#ff6640','cardBorderColor':null},
       {'id':'4','cardForegroundColor':'#ffffff','cardBackgroundColor':'#20e834','cardBorderColor':null},
@@ -18,6 +20,8 @@ class MyColors{
       {'id':'13','cardForegroundColor':'#ffffff','cardBackgroundColor':'#af69f5','cardBorderColor':null},
       {'id':'14','cardForegroundColor':'#ffffff','cardBackgroundColor':'#f569f5','cardBorderColor':null},
       {'id':'15','cardForegroundColor':'#ffffff','cardBackgroundColor':'#f569a3','cardBorderColor':null},
+      {'id':'15','cardForegroundColor':'#ffffff','cardBackgroundColor':'#3b3845','cardBorderColor':null},
+      {'id':'15','cardForegroundColor':'#ffffff','cardBackgroundColor':'#876a61','cardBorderColor':null},
     ];
   }
 
