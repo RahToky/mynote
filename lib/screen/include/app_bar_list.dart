@@ -8,13 +8,12 @@ class MySliverAppBar extends StatelessWidget {
     double _appBarHeight;
     return SliverAppBar(
       actions: [
-        /*popupMenus(context)*/
         IconButton(
           icon: Icon(Icons.info_outline),
           onPressed: () {
             showDialog(
                 context: context,
-                builder: (BuildContext context) => aboutDialog(context));
+                builder: (BuildContext context) => AboutDialog());
           },
         )
       ],
@@ -49,77 +48,4 @@ class MySliverAppBar extends StatelessWidget {
       ),
     );
   }
-
-  Widget popupMenus(context) => PopupMenuButton(
-        //don't specify icon if you want 3 dot menu
-        itemBuilder: (context) => [
-          PopupMenuItem<int>(
-            value: 0,
-            child: Text(
-              kAbout,
-              style: const TextStyle(color: Colors.black87),
-            ),
-          ),
-          PopupMenuItem<int>(
-            value: 0,
-            child: Text(
-              'Help',
-              style: const TextStyle(color: Colors.black87),
-            ),
-          ),
-        ],
-        onSelected: (item) => {
-          showDialog(
-              context: context,
-              builder: (context) {
-                return const AboutDialog();
-              }),
-        },
-      );
-
-  Widget aboutDialog(BuildContext context) => Dialog(
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12.0)), //this right here
-        child: Container(
-          height: 300.0,
-          width: 300.0,
-          child: Stack(
-            children: [
-              Container(
-                padding: EdgeInsets.all(20),
-                color: Colors.red,
-                child: Icon(Icons.file_copy),
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.all(15.0),
-                    child: Text(
-                      'Cool',
-                      style: TextStyle(color: Colors.red),
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.all(15.0),
-                    child: Text(
-                      'Awesome',
-                      style: TextStyle(color: Colors.red),
-                    ),
-                  ),
-                  Padding(padding: EdgeInsets.only(top: 50.0)),
-                  TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: Text(
-                        'Got It!',
-                        style: TextStyle(color: Colors.purple, fontSize: 18.0),
-                      ))
-                ],
-              ),
-            ],
-          ),
-        ),
-      );
 }

@@ -11,12 +11,13 @@ class MyAppBarAdd extends StatelessWidget implements PreferredSizeWidget, Colors
   final Color _hexFirstColor;
   final Color _hexSecondColor;
   final ColorsPickerListener _colorsPickerListener;
+  double templateHeight;
 
   MyAppBarAdd(this.title, this._hexFirstColor,this._hexSecondColor,this._colorsPickerListener);
 
   @override
   Widget build(BuildContext context) {
-    final templateHeight = kToolbarHeight * 0.4;
+    templateHeight = kToolbarHeight * 0.4;
     return AppBar(
       elevation: 0,
       centerTitle: true,
@@ -26,18 +27,13 @@ class MyAppBarAdd extends StatelessWidget implements PreferredSizeWidget, Colors
           width: kToolbarHeight,
           margin: EdgeInsets.all(10),
           child: Stack(
-            alignment: Alignment.topRight,
+            alignment: Alignment.centerRight,
             children: [
               Positioned(
-                child: Container(
-                  width: templateHeight,
-                  height: templateHeight,
-                  color: _hexSecondColor,
-                ),
+                child: dotColorPicker(_hexSecondColor)
               ),
               Positioned(
-                right: 5,
-                top: 5,
+                right: 7,
                 child: InkWell(
                   onTap: () {
                     showDialog(
@@ -47,11 +43,7 @@ class MyAppBarAdd extends StatelessWidget implements PreferredSizeWidget, Colors
                       },
                     );
                   },
-                  child: Container(
-                    width: templateHeight,
-                    height: templateHeight,
-                    color: _hexFirstColor,
-                  ),
+                  child: dotColorPicker(_hexFirstColor),
                 ),
               ),
             ],
@@ -65,4 +57,13 @@ class MyAppBarAdd extends StatelessWidget implements PreferredSizeWidget, Colors
   void onPick(Map<String, String> colorMap) {
     _colorsPickerListener.onPick(colorMap);
   }
+
+  Widget dotColorPicker(Color color) => Container(
+    width: templateHeight,
+    height: templateHeight,
+    decoration: BoxDecoration(
+      color: color,
+      borderRadius: BorderRadius.circular(50),
+    ),
+  );
 }

@@ -1,4 +1,4 @@
-String kAppName = "My Note";
+String kAppName = "Mes Notes";
 String kTitle = "Titre";
 String kTheme = "Thème";
 String kContent = "Contenu";
@@ -14,4 +14,5 @@ String kRemove = "Supprimer";
 String kDeletion = "Suppression";
 String kCancel = "Annuler";
 String kConfirm = "Confirmer";
-String kAUsureToDel = "Êtes-vous sûr de vouloir le supprimer ?";
+String kSureToDel = "Êtes-vous sûr de vouloir le supprimer ?";
+String kNoteRemoved = "Note supprimée";

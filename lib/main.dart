@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:my_note/const/strings.dart';
 
 import 'screen/note_add.dart';
 import 'screen/note_detail.dart';
@@ -14,12 +15,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'My Note',
-      initialRoute: HomePage.routeName,
+      title: kAppName,
+      initialRoute: NoteListScreen.routeName,
       routes: {
-        HomePage.routeName: (context) => HomePage(),
-        NoteAddPage.routeName: (context) => NoteAddPage(),
-        NoteDetailPage.routeName: (context) => NoteDetailPage(),
+        NoteListScreen.routeName: (context) => NoteListScreen(),
+        NoteAddScreen.routeName: (context) => NoteAddScreen(),
+        NoteDetailScreen.routeName: (context) => NoteDetailScreen(),
       },
       theme: ThemeData(
         primaryColor: Colors.white,

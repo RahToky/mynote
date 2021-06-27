@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'dart:developer' as developer;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -6,21 +6,20 @@ import 'package:my_note/const/strings.dart';
 import 'package:my_note/model/note.dart';
 import 'package:my_note/service/note_service.dart';
 
+import 'dialog/confirm_dialog.dart';
 import 'include/app_bar_list.dart';
 import 'include/note_card.dart';
 import 'note_add.dart';
-import 'dart:developer' as developer;
-
 import 'note_detail.dart';
 
-class HomePage extends StatefulWidget {
+class NoteListScreen extends StatefulWidget {
   static const routeName = "/";
 
   @override
-  _HomePageState createState() => _HomePageState();
+  _NoteListScreenState createState() => _NoteListScreenState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _NoteListScreenState extends State<NoteListScreen> {
   ScrollController _scrollController = ScrollController();
   final NoteService _noteService = NoteService();
   List<Note> notes;
@@ -92,8 +91,8 @@ class _HomePageState extends State<HomePage> {
                     confirmDismiss: (direction) async {
                       return await showDialog(
                         context: context,
-                        builder: (BuildContext context) {
-                          return confirmDialog(context);
+                        builder: (_) {
+                          return ConfirmDialog(context);
                         },
                       );
                     },
@@ -109,7 +108,7 @@ class _HomePageState extends State<HomePage> {
           backgroundColor: Theme.of(context).accentColor,
           foregroundColor: Colors.white,
           onPressed: () {
-            Navigator.pushNamed(context, NoteAddPage.routeName).then((value) {
+            Navigator.pushNamed(context, NoteAddScreen.routeName).then((value) {
               fetchNotes();
             });
           },
@@ -139,9 +138,10 @@ class _HomePageState extends State<HomePage> {
                 color: Colors.green,
               ),
               const SizedBox(width: 5),
-              const Text('Note supprimée'),
+              Text('$kNoteRemoved'),
             ],
           ),
+          duration: Duration(milliseconds: 1000),
         ),
       );
     } on Exception catch (e) {
@@ -149,32 +149,12 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  AlertDialog confirmDialog(context) => AlertDialog(
-        title: Text(kConfirm),
-        content: Text(kAUsureToDel),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text(kCancel),
-            style: TextButton.styleFrom(
-              backgroundColor: Colors.grey,
-            ),
-          ),
-          TextButton(
-            onPressed: () => {
-              Navigator.of(context).pop(true),
-            },
-            child: Text(kRemove),
-            style: TextButton.styleFrom(
-              backgroundColor: Colors.red,
-            ),
-          ),
-        ],
-      );
-
   void _openDetailScreen(note) {
-    Navigator.pushNamed(context, NoteDetailPage.routeName,
-        arguments: {'note': note}).then((value) {
+    Navigator.pushNamed(
+      context,
+      NoteDetailScreen.routeName,
+      arguments: {'note': note},
+    ).then((value) {
       fetchNotes();
     });
   }

@@ -1,37 +1,45 @@
 import 'package:flutter/material.dart';
 import 'package:my_note/callback/color_picker_callback.dart';
-import 'package:my_note/const/colors.dart';
 import 'package:my_note/const/strings.dart';
 import 'package:my_note/model/note.dart';
 import 'package:my_note/service/note_service.dart';
 import 'package:my_note/util/color_util.dart';
-
 import 'include/app_bar_add.dart';
+import 'dart:developer' as developer;
 
-class NoteAddPage extends StatefulWidget {
+class NoteAddScreen extends StatefulWidget {
   static const routeName = "/add2";
 
   @override
-  _NoteAddPageState createState() => _NoteAddPageState();
+  _NoteAddScreenState createState() => _NoteAddScreenState();
 }
 
-class _NoteAddPageState extends State<NoteAddPage>  implements ColorsPickerListener{
+class _NoteAddScreenState extends State<NoteAddScreen>  implements ColorsPickerListener{
 
   Note note;
   final NoteService _noteService = NoteService();
 
   TextEditingController _titleController;
   TextEditingController _contentController;
-  bool focusContent = false;
-  bool isEditing = false;
+  bool _focusContent = false;
+  bool _isEditing = true;
+  bool _isAlreadyInitiated = false;
 
   void initNote(context) {
-    final arguments = ModalRoute.of(context).settings.arguments as Map;
-    if (arguments != null) note = arguments['note'];
-    if (note == null) {
-      isEditing = true;
-      note = Note();
-      setNoteColor("#43474a","#ffffff","#43474a");
+    if(!_isAlreadyInitiated) {
+      _isAlreadyInitiated = true;
+      final arguments = ModalRoute
+          .of(context)
+          .settings
+          .arguments as Map;
+      if (arguments != null) note = arguments['note'];
+      if (note == null) {
+        note = Note();
+        _isEditing = false;
+        setNoteColor("#43474a", "#ffffff", "#43474a");
+      }
+      _titleController.text = note.title;
+      _contentController.text = note.content;
     }
   }
 
@@ -48,21 +56,19 @@ class _NoteAddPageState extends State<NoteAddPage>  implements ColorsPickerListe
     _contentController = TextEditingController();
   }
 
-
-
   @override
   Widget build(BuildContext context) {
-    initNote(context);
     final Size size = MediaQuery.of(context).size;
+    initNote(context);
 
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
-      appBar: MyAppBarAdd(isEditing ? kEdit : kNew, HexColor(note.cardBackgroundColor),HexColor(note.cardForegroundColor),this),
+      appBar: MyAppBarAdd(_isEditing ? kEdit : kNew, HexColor(note.cardBackgroundColor),HexColor(note.cardForegroundColor),this),
       body: SingleChildScrollView(
         child: Column(
           children: [
             SizedBox(height: 10),
-            createBox(
+            createContainer(
               height: size.height - 10 - kToolbarHeight * 3,
               width: size.width,
               backgroundColor: HexColor(note.cardBackgroundColor),
@@ -76,11 +82,11 @@ class _NoteAddPageState extends State<NoteAddPage>  implements ColorsPickerListe
                     Container(
                       height: 30,
                       child: TextField(
-                        autofocus: true,
-                        onTap: () {
-                          focusContent = false;
-                        },
                         controller: _titleController,
+                        autofocus: false,
+                        onTap: () {
+                          _focusContent = false;
+                        },
                         maxLines: 1,
                         decoration: new InputDecoration(
                             isDense: true,
@@ -90,7 +96,7 @@ class _NoteAddPageState extends State<NoteAddPage>  implements ColorsPickerListe
                             hintStyle: TextStyle(
                               color: HexColor(note.cardForegroundColor),
                               fontWeight: FontWeight.bold,
-                              fontSize: 24,
+                              fontSize: 22,
                             )),
                         style: TextStyle(
                             color: HexColor(note.cardForegroundColor),
@@ -102,13 +108,13 @@ class _NoteAddPageState extends State<NoteAddPage>  implements ColorsPickerListe
                     InkWell(
                       onTap: () {
                         setState(() {
-                          focusContent = true;
+                          _focusContent = true;
                         });
                       },
                       child: Container(
                         height: size.height * 0.66,
                         child: TextField(
-                          autofocus: focusContent,
+                          autofocus: _focusContent,
                           controller: _contentController,
                           maxLines: null,
                           decoration: new InputDecoration(
@@ -168,7 +174,7 @@ class _NoteAddPageState extends State<NoteAddPage>  implements ColorsPickerListe
     });
   }
 
-  Container createBox(
+  Container createContainer(
       {height, width, backgroundColor, borderColor, widgetChild}) =>
       Container(
         width: width,
