@@ -23,7 +23,7 @@ class ColorPickerDialog extends StatelessWidget {
       elevation: 0,
       backgroundColor: Colors.transparent,
       child: Container(
-        color: Colors.transparent,
+        color: Colors.white,
         padding: EdgeInsets.all(5),
         alignment: Alignment.center,
         height: boxHeight,
